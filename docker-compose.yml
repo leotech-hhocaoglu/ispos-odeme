@@ -1,0 +1,15 @@
+services:
+  frontend:
+    platform: linux/amd64
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
+    image: localhost:11081/ispos-frontend:latest
+    ports:
+      - "${FRONTEND_HTTP_PORT:-12016}:80"
+    environment:
+      BACKEND_UPSTREAM: "${BACKEND_UPSTREAM:-http://host.docker.internal:8080}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped

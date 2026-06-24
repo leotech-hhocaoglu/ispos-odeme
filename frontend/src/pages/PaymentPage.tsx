@@ -71,7 +71,7 @@ export function PaymentPage() {
     <main className="screen payment-screen">
       <header className="topbar">
         <div>
-          <p className="eyebrow">İşPOS Sanal POS</p>
+          <p className="eyebrow">FH Yıldız Tekstil</p>
           <h1>Ödeme</h1>
         </div>
         <div className="user-actions">
@@ -232,7 +232,7 @@ export function PaymentPage() {
             <strong>{maskedCard}</strong>
           </div>
           <p className="summary-note">
-            Sağlayıcı bilgileri, imzalama ve İşPOS iletişimi backend tarafında kalır.
+            Sağlayıcı bilgileri, imzalama ve ödeme altyapısı iletişimi backend tarafında kalır.
           </p>
         </aside>
       </section>

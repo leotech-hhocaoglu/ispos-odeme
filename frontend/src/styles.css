@@ -32,7 +32,7 @@ button:disabled {
 }
 
 a {
-  color: #075e76;
+  color: #416a75;
   font-weight: 700;
 }
 
@@ -48,9 +48,7 @@ a {
 }
 
 .auth-screen {
-  background:
-    linear-gradient(135deg, rgba(7, 94, 118, 0.95), rgba(23, 32, 42, 0.98)),
-    #17202a;
+  background: linear-gradient(to bottom, #416a75 0 33.333%, #ffffff 33.333% 100%);
 }
 
 .auth-shell {
@@ -132,8 +130,8 @@ a {
 
 .field input:focus,
 .field select:focus {
-  border-color: #075e76;
-  box-shadow: 0 0 0 3px rgba(7, 94, 118, 0.15);
+  border-color: #416a75;
+  box-shadow: 0 0 0 3px rgba(65, 106, 117, 0.16);
 }
 
 .primary-button,
@@ -147,12 +145,12 @@ a {
 
 .primary-button {
   width: 100%;
-  background: #075e76;
+  background: #416a75;
   color: #ffffff;
 }
 
 .primary-button:hover:not(:disabled) {
-  background: #064e62;
+  background: #34555e;
 }
 
 .secondary-button {
@@ -186,9 +184,9 @@ a {
 }
 
 .alert-info {
-  border: 1px solid #8cbacc;
-  background: #eef9fd;
-  color: #075e76;
+  border: 1px solid #9db8c0;
+  background: #eef5f6;
+  color: #416a75;
 }
 
 .payment-screen {

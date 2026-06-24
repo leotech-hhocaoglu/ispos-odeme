@@ -20,7 +20,7 @@ The frontend must be TypeScript-based. The backend must be Spring-based.
 Recommended defaults:
 
 - Frontend: React + Vite + TypeScript.
-- Backend: Java 21 + Spring Boot 3 + Gradle or Maven.
+- Backend: Java 21 + Spring Boot 3 + Maven.
 - API style: REST JSON between frontend and backend.
 - Payment provider boundary: only the backend communicates with İşPOS/Sanal POS services.
 

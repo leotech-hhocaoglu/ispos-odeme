@@ -45,3 +45,17 @@ Uses:
 ```text
 VITE_API_BASE_URL=http://localhost:8080/api
 ```
+
+For the Nginx Docker image, the app is built with:
+
+```text
+VITE_API_BASE_URL=/api
+```
+
+Nginx then proxies `/api/*` to `BACKEND_UPSTREAM`, which defaults to `http://host.docker.internal:8080`.
+
+Build and push a Linux AMD64 image to the registry at `localhost:11081`:
+
+```bash
+docker buildx build --platform linux/amd64 -t localhost:11081/ispos-frontend:latest --push .
+```

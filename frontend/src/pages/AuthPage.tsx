@@ -72,10 +72,10 @@ export function AuthPage() {
     <main className="screen auth-screen">
       <section className="auth-shell" aria-labelledby="auth-title">
         <div className="brand-block">
-          <span className="brand-mark">IP</span>
+          <span className="brand-mark">FH</span>
           <div>
-            <p className="eyebrow">İşPOS Sanal POS</p>
-            <h1 id="auth-title">Operatör girişi</h1>
+            <p className="eyebrow">FH Yıldız Tekstil</p>
+            <h1 id="auth-title">Müşteri Girişi</h1>
           </div>
         </div>
 
