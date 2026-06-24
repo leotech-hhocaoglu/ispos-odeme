@@ -87,7 +87,7 @@ export function AuthPage() {
               name="username"
               value={form.username}
               onChange={(event) => setForm({ ...form, username: event.target.value })}
-              placeholder="operator@example.com"
+              placeholder="kullanici@ornek.com"
               type="text"
             />
           </label>
@@ -99,7 +99,7 @@ export function AuthPage() {
               name="password"
               value={form.password}
               onChange={(event) => setForm({ ...form, password: event.target.value })}
-              placeholder="Şifreniz"
+              placeholder="Şifrenizi girin"
               type="password"
             />
           </label>

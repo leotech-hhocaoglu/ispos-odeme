@@ -9,7 +9,8 @@ export type PaymentStatus =
 export type PaymentRequest = {
   orderReference: string;
   amount: string;
-  currency: 'TRY' | 'USD' | 'EUR';
+  currency: 'TRY';
+  statementDescription: string;
   card: {
     holderName: string;
     number: string;

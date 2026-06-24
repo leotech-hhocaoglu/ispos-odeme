@@ -3,11 +3,16 @@ import { useAuth } from '../app/AuthContext';
 import { paymentService } from '../services/payments';
 import { ApiError } from '../types/api';
 import type { PaymentRequest, PaymentResponse } from '../types/payment';
+import amexLogo from '../assets/payment-logos/amex.svg';
+import bkmLogo from '../assets/payment-logos/bkm.png';
+import mastercardLogo from '../assets/payment-logos/mastercard.svg';
+import troyLogo from '../assets/payment-logos/troy.png';
+import visaLogo from '../assets/payment-logos/visa.svg';
 
 type PaymentForm = {
   orderReference: string;
   amount: string;
-  currency: PaymentRequest['currency'];
+  statementDescription: string;
   holderName: string;
   cardNumber: string;
   expiryMonth: string;
@@ -15,10 +20,19 @@ type PaymentForm = {
   cvv: string;
 };
 
+const SUPPORTED_CURRENCY: PaymentRequest['currency'] = 'TRY';
+const paymentLogos = [
+  { alt: 'Visa', src: visaLogo },
+  { alt: 'Mastercard', src: mastercardLogo },
+  { alt: 'TROY', src: troyLogo },
+  { alt: 'American Express', src: amexLogo },
+  { alt: 'BKM', src: bkmLogo },
+];
+
 const initialForm: PaymentForm = {
-  orderReference: `ORD-${new Date().getFullYear()}-`,
+  orderReference: createOrderReference(),
   amount: '',
-  currency: 'TRY',
+  statementDescription: 'FH Yildiz Tekstil',
   holderName: '',
   cardNumber: '',
   expiryMonth: '',
@@ -63,6 +77,7 @@ export function PaymentPage() {
         setError('Ödeme servisine ulaşılamıyor.');
       }
     } finally {
+      setForm((currentForm) => ({ ...currentForm, cvv: '' }));
       setIsSubmitting(false);
     }
   }
@@ -88,32 +103,10 @@ export function PaymentPage() {
             <h2>İşlem</h2>
           </div>
 
-          <div className="form-grid two-columns">
-            <label className="field">
-              <span>Sipariş referansı</span>
-              <input
-                name="orderReference"
-                value={form.orderReference}
-                onChange={(event) => setForm({ ...form, orderReference: event.target.value })}
-                placeholder="ORD-2026-0001"
-              />
-            </label>
-
-            <label className="field">
-              <span>Para birimi</span>
-              <select
-                name="currency"
-                value={form.currency}
-                onChange={(event) =>
-                  setForm({ ...form, currency: event.target.value as PaymentForm['currency'] })
-                }
-              >
-                <option value="TRY">TRY</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-              </select>
-            </label>
-          </div>
+          <label className="field">
+            <span>Sipariş referansı</span>
+            <input name="orderReference" readOnly value={form.orderReference} />
+          </label>
 
           <label className="field">
             <span>Tutar</span>
@@ -122,12 +115,28 @@ export function PaymentPage() {
               name="amount"
               value={form.amount}
               onChange={(event) => setForm({ ...form, amount: event.target.value })}
-              placeholder="125.50"
+              placeholder="Tutarı girin"
+            />
+          </label>
+
+          <label className="field">
+            <span>Ekstre açıklaması</span>
+            <input
+              maxLength={80}
+              name="statementDescription"
+              value={form.statementDescription}
+              onChange={(event) =>
+                setForm({ ...form, statementDescription: event.target.value })
+              }
+              placeholder="Kart ekstresinde görünecek açıklama"
             />
           </label>
 
           <div className="section-heading">
-            <h2>Kart</h2>
+            <div>
+              <h2>Kart</h2>
+              <p>Kart bilgileriniz yalnızca bu ödeme işlemi için güvenli şekilde kullanılır.</p>
+            </div>
           </div>
 
           <label className="field">
@@ -137,7 +146,7 @@ export function PaymentPage() {
               name="holderName"
               value={form.holderName}
               onChange={(event) => setForm({ ...form, holderName: event.target.value })}
-              placeholder="Ada Lovelace"
+              placeholder="Ad Soyad"
             />
           </label>
 
@@ -151,7 +160,7 @@ export function PaymentPage() {
               onChange={(event) =>
                 setForm({ ...form, cardNumber: formatCardNumber(event.target.value) })
               }
-              placeholder="4111 1111 1111 1111"
+              placeholder="Kart numarasını girin"
             />
           </label>
 
@@ -167,7 +176,7 @@ export function PaymentPage() {
                 onChange={(event) =>
                   setForm({ ...form, expiryMonth: onlyDigits(event.target.value).slice(0, 2) })
                 }
-                placeholder="12"
+                placeholder="Ay girin"
               />
             </label>
 
@@ -176,18 +185,18 @@ export function PaymentPage() {
               <input
                 autoComplete="cc-exp-year"
                 inputMode="numeric"
-                maxLength={4}
+                maxLength={2}
                 name="expiryYear"
                 value={form.expiryYear}
                 onChange={(event) =>
-                  setForm({ ...form, expiryYear: onlyDigits(event.target.value).slice(0, 4) })
+                  setForm({ ...form, expiryYear: onlyDigits(event.target.value).slice(0, 2) })
                 }
-                placeholder="2030"
+                placeholder="YY"
               />
             </label>
 
             <label className="field">
-              <span>CVV</span>
+              <span>Güvenlik kodu</span>
               <input
                 autoComplete="cc-csc"
                 inputMode="numeric"
@@ -197,7 +206,7 @@ export function PaymentPage() {
                 onChange={(event) =>
                   setForm({ ...form, cvv: onlyDigits(event.target.value).slice(0, 4) })
                 }
-                placeholder="123"
+                placeholder="Güvenlik kodunu girin"
                 type="password"
               />
             </label>
@@ -220,7 +229,7 @@ export function PaymentPage() {
           <div>
             <p className="summary-label">Tutar</p>
             <strong>
-              {form.amount || '0.00'} {form.currency}
+              {form.amount || '0.00'} {SUPPORTED_CURRENCY}
             </strong>
           </div>
           <div>
@@ -228,14 +237,30 @@ export function PaymentPage() {
             <strong>{form.orderReference || 'Belirtilmedi'}</strong>
           </div>
           <div>
+            <p className="summary-label">Güvenli ödeme</p>
+            <strong>Banka onayı desteklenir</strong>
+            <span className="summary-meta">Gerekirse bankanızın onay ekranına yönlendirilirsiniz.</span>
+          </div>
+          <div>
             <p className="summary-label">Kart</p>
             <strong>{maskedCard}</strong>
           </div>
           <p className="summary-note">
-            Sağlayıcı bilgileri, imzalama ve ödeme altyapısı iletişimi backend tarafında kalır.
+            Kart numarası ve güvenlik kodu yalnızca bu ödeme için kullanılır. Güvenlik kodu işlem
+            denemesi sonrasında ekrandan temizlenir.
           </p>
         </aside>
       </section>
+
+      <footer className="payment-footer" aria-label="Ödeme altyapısı">
+        <ul className="payment-logo-list">
+          {paymentLogos.map((logo) => (
+            <li className="payment-logo-item" key={logo.alt}>
+              <img alt={logo.alt} src={logo.src} />
+            </li>
+          ))}
+        </ul>
+      </footer>
     </main>
   );
 }
@@ -247,28 +272,52 @@ function PaymentResult({ result }: { result: PaymentResponse }) {
     <div className={`alert ${className}`} role="status">
       <strong>{formatStatus(result.status)}</strong>
       <span>{result.message ?? 'Ödeme yanıtı alındı.'}</span>
-      {result.redirect ? (
-        <a href={result.redirect.url} rel="noreferrer">
-          Sağlayıcı doğrulamasına devam et
-        </a>
-      ) : null}
+      {result.redirect ? <PaymentRedirectAction redirect={result.redirect} /> : null}
     </div>
   );
 }
 
+function PaymentRedirectAction({ redirect }: { redirect: NonNullable<PaymentResponse['redirect']> }) {
+  if (redirect.method === 'POST') {
+    return (
+      <form action={redirect.url} className="redirect-form" method="post">
+        {Object.entries(redirect.fields ?? {}).map(([name, value]) => (
+          <input key={name} name={name} type="hidden" value={value} />
+        ))}
+        <button className="secondary-button" type="submit">
+          Banka onayına devam et
+        </button>
+      </form>
+    );
+  }
+
+  return (
+    <a href={redirect.url} rel="noreferrer">
+      Banka onayına devam et
+    </a>
+  );
+}
+
 function validatePaymentForm(form: PaymentForm): string {
-  const amount = Number(form.amount);
+  const amount = Number(normalizeAmount(form.amount));
   const cardNumber = onlyDigits(form.cardNumber);
   const month = Number(form.expiryMonth);
-  const year = Number(form.expiryYear);
-  const currentYear = new Date().getFullYear();
+  const year = normalizeExpiryYear(form.expiryYear);
 
   if (!form.orderReference.trim()) {
     return 'Sipariş referansı zorunludur.';
   }
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    return 'Tutar sıfırdan büyük olmalıdır.';
+  if (!/^\d{8,24}$/.test(form.orderReference.trim())) {
+    return 'Sipariş referansı 8 ile 24 haneli sayısal bir değer olmalıdır.';
+  }
+
+  if (!/^\d+(\.\d{1,2})?$/.test(normalizeAmount(form.amount)) || amount <= 0) {
+    return 'Tutar sıfırdan büyük ve en fazla iki ondalıklı olmalıdır.';
+  }
+
+  if (!form.statementDescription.trim()) {
+    return 'Ekstre açıklaması zorunludur.';
   }
 
   if (!form.holderName.trim()) {
@@ -283,12 +332,12 @@ function validatePaymentForm(form: PaymentForm): string {
     return 'Son kullanma ayı 01 ile 12 arasında olmalıdır.';
   }
 
-  if (year < currentYear || year > currentYear + 25) {
+  if (!year || isExpired(month, year)) {
     return 'Son kullanma yılı geçersiz.';
   }
 
   if (form.cvv.length < 3 || form.cvv.length > 4) {
-    return 'CVV 3 veya 4 haneli olmalıdır.';
+    return 'Güvenlik kodu 3 veya 4 haneli olmalıdır.';
   }
 
   return '';
@@ -297,20 +346,56 @@ function validatePaymentForm(form: PaymentForm): string {
 function toPaymentRequest(form: PaymentForm): PaymentRequest {
   return {
     orderReference: form.orderReference.trim(),
-    amount: Number(form.amount).toFixed(2),
-    currency: form.currency,
+    amount: Number(normalizeAmount(form.amount)).toFixed(2),
+    currency: SUPPORTED_CURRENCY,
+    statementDescription: form.statementDescription.trim(),
     card: {
       holderName: form.holderName.trim(),
       number: onlyDigits(form.cardNumber),
       expiryMonth: form.expiryMonth.padStart(2, '0'),
-      expiryYear: form.expiryYear,
+      expiryYear: normalizeExpiryYear(form.expiryYear),
       cvv: form.cvv,
     },
   };
 }
 
+function createOrderReference() {
+  const now = new Date();
+  const year = String(now.getFullYear());
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const hour = String(now.getHours()).padStart(2, '0');
+  const minute = String(now.getMinutes()).padStart(2, '0');
+  const second = String(now.getSeconds()).padStart(2, '0');
+
+  return `${year}${month}${day}${hour}${minute}${second}`;
+}
+
 function onlyDigits(value: string) {
   return value.replace(/\D/g, '');
+}
+
+function normalizeAmount(value: string) {
+  return value.trim().replace(',', '.');
+}
+
+function normalizeExpiryYear(value: string) {
+  const digits = onlyDigits(value);
+
+  if (digits.length !== 2) {
+    return '';
+  }
+
+  return digits;
+}
+
+function isExpired(month: number, twoDigitYear: string) {
+  const now = new Date();
+  const expiryYear = 2000 + Number(twoDigitYear);
+  const expiryMonthIndex = month - 1;
+  const endOfExpiryMonth = new Date(expiryYear, expiryMonthIndex + 1, 0, 23, 59, 59);
+
+  return endOfExpiryMonth < now;
 }
 
 function formatCardNumber(value: string) {
@@ -324,7 +409,7 @@ function formatStatus(status: PaymentResponse['status']) {
   const labels: Record<PaymentResponse['status'], string> = {
     APPROVED: 'Onaylandı',
     DECLINED: 'Reddedildi',
-    REDIRECT_REQUIRED: 'Yönlendirme gerekli',
+    REDIRECT_REQUIRED: 'Banka onayı gerekiyor',
     PENDING: 'Beklemede',
     FAILED: 'Başarısız',
     UNKNOWN: 'Bilinmiyor',

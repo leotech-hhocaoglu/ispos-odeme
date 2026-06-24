@@ -81,18 +81,21 @@ Unauthenticated response: `401 Unauthorized`.
 
 Initiates a payment.
 
+Currency support is currently limited to `TRY`.
+
 Request:
 
 ```json
 {
-  "orderReference": "ORD-2026-0001",
+  "orderReference": "202606240001",
   "amount": "125.50",
   "currency": "TRY",
+  "statementDescription": "FH Yildiz Tekstil",
   "card": {
     "holderName": "Ada Lovelace",
     "number": "4111111111111111",
     "expiryMonth": "12",
-    "expiryYear": "2030",
+    "expiryYear": "30",
     "cvv": "123"
   }
 }
@@ -103,7 +106,7 @@ Response for approved payment:
 ```json
 {
   "paymentId": "pay_123",
-  "orderReference": "ORD-2026-0001",
+  "orderReference": "202606240001",
   "status": "APPROVED",
   "provider": "ISPOS",
   "providerTransactionId": "provider-transaction-id",
@@ -116,7 +119,7 @@ Response for redirect-required payment:
 ```json
 {
   "paymentId": "pay_123",
-  "orderReference": "ORD-2026-0001",
+  "orderReference": "202606240001",
   "status": "REDIRECT_REQUIRED",
   "provider": "ISPOS",
   "redirect": {
@@ -147,7 +150,7 @@ Response:
 ```json
 {
   "paymentId": "pay_123",
-  "orderReference": "ORD-2026-0001",
+  "orderReference": "202606240001",
   "status": "APPROVED",
   "provider": "ISPOS",
   "providerTransactionId": "provider-transaction-id",

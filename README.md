@@ -33,7 +33,10 @@ Recommended stack:
 Initial routes:
 
 - `/auth`: user authentication screen
-- `/payment`: authenticated payment screen
+- `/payment`: authenticated İşPOS payment screen with TRY-only amount entry,
+  numeric order reference, card statement description, and 3D Secure redirect
+  handling through the backend. The page footer centers payment infrastructure
+  logo images sourced from the web and served from local frontend assets.
 
 ## Backend
 

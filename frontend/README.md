@@ -20,6 +20,10 @@ TypeScript frontend for the İşPOS payment application.
 - Guard `/payment` for authenticated users.
 - Validate input for user feedback.
 - Call only backend `/api` endpoints.
+- Keep İşPOS merchant fields and credentials out of browser code.
+- Support backend-provided 3D Secure redirects.
+- Show centered web-sourced payment infrastructure logos from local frontend
+  assets in the payment footer.
 - Avoid storing or logging sensitive card data.
 
 ## Suggested Structure

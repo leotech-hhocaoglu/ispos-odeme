@@ -22,6 +22,17 @@ Confirm the current official İşbank documentation for:
 - Success and failure URL behavior
 - Test card numbers and sandbox rules
 
+Verified sandbox notes on 2026-06-24:
+
+- Virtual POS product: `virtual-pos-product` version `1.1.7`.
+- The product exposes separate `Payment` and `3D Payment` operations.
+- The sandbox Virtual POS base path is `/api/sandbox-isbank/virtual-pos/v1`.
+- `3D Payment` accepts order number, merchant number, card number, expiry month,
+  expiry year, numeric currency, amount, CVV, and card statement description.
+- TRY is represented by numeric currency code `949` in the İşPOS request.
+- İşPOS client ID, client secret, OAuth token, certificate, and merchant number
+  are backend-owned and must not be exposed to the frontend.
+
 ## Suggested Backend Interface
 
 ```java

@@ -42,12 +42,13 @@ Purpose:
 Minimum fields:
 
 - Amount
-- Currency
-- Order reference
+- Currency, fixed to TRY for the initial İşPOS flow
+- Read-only numeric order reference
+- Card statement description
 - Card holder name
 - Card number
 - Expiry month
-- Expiry year
+- Expiry year in `YY` format
 - CVV
 
 Minimum states:
@@ -59,6 +60,13 @@ Minimum states:
 - Payment approved
 - Payment declined
 - Payment status unknown
+
+Footer:
+
+- Show centered payment infrastructure logo images, including Visa, Mastercard,
+  TROY, American Express, and BKM.
+- Keep logo files local after sourcing them from the web; do not show an
+  "accepted cards" label in the payment page footer.
 
 ## Functional Requirements
 
